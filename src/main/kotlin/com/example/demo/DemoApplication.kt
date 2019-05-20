@@ -13,6 +13,8 @@ import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.companionObject
@@ -41,14 +43,24 @@ inline fun <T : Any> getClassForLogging(javaClass:Class<T>): Class<*> {
 class TestController {
 	val log by LoggerDelegate()
 
-	@GetMapping("/delay")
+	@GetMapping("/coroutine/delay")
 	@ResponseBody
-	suspend fun block(): String {
+	suspend fun coroutineDelayed(): String {
 		log.debug("Start Block")
 		delay(25000L)
 //		Thread.sleep(5000L)
 		log.debug("End Block")
 		return "Hello"
+	}
+
+	@GetMapping("/reactor/delay")
+	fun reactorDelayed() : Mono<String> {
+		log.debug("Start.")
+		return Mono.defer { Mono.delay(Duration.of(5,ChronoUnit.SECONDS)) }
+				.map {
+					log.debug("End Block")
+					"Hello"
+				}
 	}
 
 }

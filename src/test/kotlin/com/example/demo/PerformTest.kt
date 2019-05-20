@@ -24,7 +24,7 @@ class PerformTest {
                 withContext(Dispatchers.IO) {
                     log.debug("시작.")
                     webClient.get()
-                            .uri("/delay")
+                            .uri("/reactor/delay")
                             .accept(MediaType.ALL)
                             .awaitExchange()
                 }
