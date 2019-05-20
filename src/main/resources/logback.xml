@@ -1,0 +1,13 @@
+<configuration scan="true" debug="true">
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %blue(%logger{36}) -%msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="org.hibernate.sql" level="ALL"/>
+    <logger name="org.springframework.web" level="ALL"/>
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
