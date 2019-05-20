@@ -13,6 +13,7 @@ import org.springframework.web.server.ServerWebExchange
 import org.springframework.web.server.WebFilter
 import org.springframework.web.server.WebFilterChain
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 import java.time.Duration
 import java.time.temporal.ChronoUnit
 import kotlin.properties.ReadOnlyProperty
@@ -55,12 +56,23 @@ class TestController {
 
 	@GetMapping("/reactor/delay")
 	fun reactorDelayed() : Mono<String> {
-		log.debug("Start.")
+		log.debug("Start Block")
 		return Mono.defer { Mono.delay(Duration.of(5,ChronoUnit.SECONDS)) }
 				.map {
 					log.debug("End Block")
 					"Hello"
 				}
+	}
+
+	@GetMapping("/reactor/block")
+	fun reactorBlocked() : Mono<String> {
+		log.debug("Start Block")
+		return  Mono.fromCallable {
+			Thread.sleep(5000L)
+			log.debug("End Block")
+			"Hello"
+			}
+		.subscribeOn(Schedulers.elastic())
 	}
 
 }
